@@ -1,5 +1,5 @@
 
-2w<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
@@ -184,7 +184,10 @@
         }
 
         .add-resource-btn,
-        .reset-btn {
+        .reset-btn,
+        .export-btn,
+        .import-btn,
+        .share-btn {
             padding: 12px 24px;
             border: none;
             border-radius: 8px;
@@ -215,6 +218,36 @@
             box-shadow: 0 8px 20px rgba(231, 76, 60, 0.3);
         }
 
+        .export-btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .import-btn {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+        }
+
+        .import-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(155, 89, 182, 0.3);
+        }
+
+        .share-btn {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+        }
+
+        .share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(243, 156, 18, 0.3);
+        }
+
         .resources-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -241,8 +274,20 @@
             max-width: 350px;
         }
 
+        .resource-tracker {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 3px solid;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            min-width: 280px;
+            max-width: 350px;
+        }
+
         .resource-tracker:hover {
-            transform: translateY(-2px);
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
         }
 
@@ -718,6 +763,19 @@
                 <button class="reset-btn" id="resetBtn" onclick="resetAll()" style="display: none;">
                     Zurücksetzen
                 </button>
+
+
+            </div>
+                <div class="controls">
+                    <button class="export-btn" id="exportBtn" onclick="exportConfig()" style="display: none;">
+                    📤 Export
+                </button>
+                <button class="import-btn" id="importBtn" onclick="importConfig()" style="display: none;">
+                    📥 Import
+                </button>
+                <button class="share-btn" id="shareBtn" onclick="generateShareLink()" style="display: none;">
+                    🔗 Share Link
+                </button>
             </div>
             
             <div class="mode-toggles">
@@ -943,10 +1001,16 @@
         function updateButtonVisibility() {
             const addBtn = document.getElementById('addResourceBtn');
             const resetBtn = document.getElementById('resetBtn');
+            const exportBtn = document.getElementById('exportBtn');
+            const importBtn = document.getElementById('importBtn');
+            const shareBtn = document.getElementById('shareBtn');
             const gameModeToggle = document.getElementById('gameModeToggle');
             
             addBtn.style.display = isConfigMode ? 'block' : 'none';
             resetBtn.style.display = isConfigMode ? 'block' : 'none';
+            exportBtn.style.display = isConfigMode ? 'block' : 'none';
+            importBtn.style.display = isConfigMode ? 'block' : 'none';
+            shareBtn.style.display = isConfigMode ? 'block' : 'none';
             gameModeToggle.style.display = isConfigMode ? 'block' : 'none';
         }
 
@@ -1120,6 +1184,21 @@
         function showAddForm() {
             document.getElementById('modalOverlay').classList.add('show');
             selectColor('#3498db');
+            
+            // Pre-fill form based on game mode
+            const currentInput = document.getElementById('resource-current');
+            const maxInput = document.getElementById('resource-max');
+            const nameInput = document.getElementById('resource-name');
+            
+            if (gameMode === 'gamemaster') {
+                // In gamemaster mode, suggest "Countdown" and set current to max
+                nameInput.value = 'Countdown';
+                currentInput.value = maxInput.value;
+            } else {
+                // In player mode, clear name and set current to 0
+                nameInput.value = '';
+                currentInput.value = '0';
+            }
         }
 
         // Hide add form
@@ -1132,9 +1211,20 @@
         function addResource(event) {
             event.preventDefault();
             
-            const name = document.getElementById('resource-name').value.trim();
-            const current = parseInt(document.getElementById('resource-current').value) || 0;
-            const max = parseInt(document.getElementById('resource-max').value) || 10;
+            let name = document.getElementById('resource-name').value.trim();
+            let current = parseInt(document.getElementById('resource-current').value) || 0;
+            let max = parseInt(document.getElementById('resource-max').value) || 10;
+            
+            // Auto-suggest "Countdown" for gamemaster mode
+            if (!name && gameMode === 'gamemaster') {
+                name = 'Countdown';
+                document.getElementById('resource-name').value = name;
+            }
+            
+            // In gamemaster mode, initialize with max value
+            if (gameMode === 'gamemaster') {
+                current = max;
+            }
             
             if (name) {
                 const newResource = {
@@ -1161,8 +1251,104 @@
             }
         }
 
+        // Export configuration to JSON file
+        function exportConfig() {
+            const config = {
+                gameMode: gameMode,
+                resources: resources,
+                timestamp: new Date().toISOString()
+            };
+            
+            const dataStr = JSON.stringify(config, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = `daggerheart-tracker-${gameMode}-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+        }
+
+        // Import configuration from JSON file
+        function importConfig() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            const config = JSON.parse(e.target.result);
+                            if (config.resources && Array.isArray(config.resources)) {
+                                gameMode = config.gameMode || gameMode;
+                                resources = config.resources;
+                                saveResources();
+                                updateBodyClass();
+                                renderResources();
+                                alert('Konfiguration erfolgreich importiert!');
+                            } else {
+                                alert('Ungültige Konfigurationsdatei!');
+                            }
+                        } catch (error) {
+                            alert('Fehler beim Lesen der Datei: ' + error.message);
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            input.click();
+        }
+
+        // Generate share link with current configuration
+        function generateShareLink() {
+            const config = {
+                gameMode: gameMode,
+                resources: resources
+            };
+            
+            const encoded = btoa(JSON.stringify(config));
+            const shareUrl = `${window.location.origin}${window.location.pathname}?config=${encoded}`;
+            
+            // Copy to clipboard
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                alert('Share-Link wurde in die Zwischenablage kopiert!\n\n' + shareUrl);
+            }).catch(() => {
+                // Fallback for older browsers
+                prompt('Share-Link (kopiere diesen):', shareUrl);
+            });
+        }
+
+        // Load configuration from URL parameters
+        function loadConfigFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const configParam = urlParams.get('config');
+            
+            if (configParam) {
+                try {
+                    const config = JSON.parse(atob(configParam));
+                    if (config.resources && Array.isArray(config.resources)) {
+                        gameMode = config.gameMode || gameMode;
+                        resources = config.resources;
+                        saveResources();
+                        updateBodyClass();
+                        renderResources();
+                        alert('Konfiguration vom Link erfolgreich geladen!');
+                        
+                        // Clean URL
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    }
+                } catch (error) {
+                    console.error('Fehler beim Laden der Konfiguration vom Link:', error);
+                }
+            }
+        }
+
         // Initialize the app when the page loads
-        document.addEventListener('DOMContentLoaded', init);
+        document.addEventListener('DOMContentLoaded', function() {
+            init();
+            loadConfigFromUrl();
+        });
     </script>
 </body>
 </html>
