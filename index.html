@@ -13,10 +13,27 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             min-height: 100vh;
             color: #333;
             padding: 20px;
+            transition: background 0.5s ease;
+        }
+
+        /* Background colors for different modes */
+        body.player-standard {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        }
+
+        body.player-config {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+        }
+
+        body.gamemaster-standard {
+            background: linear-gradient(135deg, #421c53 0%, #261e29 100%);
+        }
+
+        body.gamemaster-config {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
         }
 
         .app {
@@ -29,12 +46,22 @@
             text-align: center;
             margin-bottom: 40px;
             color: white;
+            position: relative;
+            padding-top: 10px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
         }
 
         .app-header h1 {
-            font-size: 1.8rem;
+            font-size: 1.4rem;
             font-weight: 700;
-            margin-bottom: 10px;
+            margin: 0;
             text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
@@ -42,10 +69,50 @@
             background-clip: text;
         }
 
-        .app-header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            margin: 0;
+        .daggerheart-logo {
+            width: 55px;
+            height: 55px;
+            display: block;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        }
+
+        .mode-toggles {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .config-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(135deg, #f1c40f, #f39c12);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            z-index: 10;
+        }
+
+        .config-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .gear-icon {
+            width: 16px;
+            height: 16px;
         }
 
         .app-main {
@@ -121,17 +188,9 @@
             max-width: 350px;
         }
 
-        .resource-tracker {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 12px;
-            padding: 20px;
-            margin: 15px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            border: 3px solid;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-            min-width: 280px;
-            max-width: 350px;
+        .resource-tracker:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
         }
 
         .resource-header {
@@ -146,6 +205,30 @@
             font-weight: 600;
             color: #2c3e50;
             margin: 0;
+        }
+
+        .resource-name-input {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            border: 2px solid #bdc3c7;
+            border-radius: 6px;
+            padding: 4px 8px;
+            width: 60%;
+            text-align: left;
+            background: #f8f9fa;
+            transition: border-color 0.3s ease;
+        }
+
+        .resource-name-input:focus {
+            outline: none;
+            border-color: #3498db;
+            background: white;
+        }
+
+        .max-value {
+            min-width: 50px;
+            text-align: center;
         }
 
         .resource-values {
@@ -224,11 +307,12 @@
         }
 
         .control-btn:hover:not(:disabled) {
+            transform: scale(1.05);
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
         }
 
         .control-btn:active:not(:disabled) {
-            transform: scale(0.98);
+            transform: scale(0.95);
         }
 
         .control-btn.decrement {
@@ -489,11 +573,7 @@
             }
             
             .app-header h1 {
-                font-size: 2.2rem;
-            }
-            
-            .app-header p {
-                font-size: 1rem;
+                font-size: 1.8rem;
             }
             
             .controls {
@@ -550,7 +630,7 @@
 
         @media (max-width: 480px) {
             .app-header h1 {
-                font-size: 1.8rem;
+                font-size: 1.6rem;
             }
             
             .resources-grid {
@@ -559,11 +639,18 @@
         }
     </style>
 </head>
-<body>
+<body class="player-standard">
     <div class="app">
         <header class="app-header">
-            <h1>Daggerheart Tracker</h1>
-            <p>Verfolge deine Ressourcen im Abenteuer</p>
+            <div class="header-content">
+                <img src="public/daggerheart-logo.png" alt="Daggerheart" class="daggerheart-logo">
+                <h1>Daggerheart Tracker</h1>
+            </div>
+            <button onclick="toggleConfigMode()" class="config-btn" title="Config Modus">
+                <svg class="gear-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.22,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.22,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.04 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.68 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.04 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z"/>
+                </svg>
+            </button>
         </header>
 
         <main class="app-main">
@@ -572,11 +659,17 @@
             </div>
             
             <div class="controls">
-                <button class="add-resource-btn" onclick="showAddForm()">
+                <button class="add-resource-btn" id="addResourceBtn" onclick="showAddForm()" style="display: none;">
                     + Neue Ressource
                 </button>
-                <button class="reset-btn" onclick="resetAll()">
+                <button class="reset-btn" id="resetBtn" onclick="resetAll()" style="display: none;">
                     Zurücksetzen
+                </button>
+            </div>
+            
+            <div class="mode-toggles">
+                <button id="gameModeToggle" onclick="toggleGameMode()" style="display: none;">
+                    <span id="gameModeText">Spielleiter Modus</span>
                 </button>
             </div>
         </main>
@@ -644,20 +737,20 @@
     </div>
 
     <script>
-        // Default resources
-        const defaultResources = [
+        // Default resources for player mode
+        const defaultPlayerResources = [
             {
                 id: 'hope',
                 name: 'Hope',
-                current: 2,
+                current: 3,
                 max: 6,
                 color: '#f39c12'
             },
             {
                 id: 'armor',
                 name: 'Armor',
-                current: 3,
-                max: 3,
+                current: 0,
+                max: 0,
                 color: '#3498db'
             },
             {
@@ -671,13 +764,26 @@
                 id: 'stress',
                 name: 'Stress',
                 current: 0,
-                max: 6,
+                max: 10,
                 color: '#9b59b6'
+            }
+        ];
+
+        // Default resources for gamemaster mode
+        const defaultGamemasterResources = [
+            {
+                id: 'fear',
+                name: 'Fear',
+                current: 0,
+                max: 12,
+                color: '#8e44ad'
             }
         ];
 
         let resources = [];
         let selectedColor = '#3498db';
+        let isConfigMode = false;
+        let gameMode = 'player'; // 'player' or 'gamemaster'
 
         // Predefined colors for the color picker
         const predefinedColors = [
@@ -690,18 +796,25 @@
         function init() {
             loadResources();
             setupColorPicker();
+            updateModeTexts();
+            updateButtonVisibility();
+            updateBodyClass();
             renderResources();
         }
 
         // Load resources from localStorage
         function loadResources() {
-            const saved = localStorage.getItem('daggerheart-resources');
-            resources = saved ? JSON.parse(saved) : [...defaultResources];
+            const saved = localStorage.getItem(`daggerheart-resources-${gameMode}`);
+            if (saved) {
+                resources = JSON.parse(saved);
+            } else {
+                resources = gameMode === 'player' ? [...defaultPlayerResources] : [...defaultGamemasterResources];
+            }
         }
 
         // Save resources to localStorage
         function saveResources() {
-            localStorage.setItem('daggerheart-resources', JSON.stringify(resources));
+            localStorage.setItem(`daggerheart-resources-${gameMode}`, JSON.stringify(resources));
         }
 
         // Setup color picker
@@ -730,6 +843,51 @@
             });
         }
 
+        // Toggle config mode
+        function toggleConfigMode() {
+            isConfigMode = !isConfigMode;
+            updateModeTexts();
+            updateButtonVisibility();
+            updateBodyClass();
+            renderResources();
+        }
+
+        // Toggle game mode
+        function toggleGameMode() {
+            gameMode = gameMode === 'player' ? 'gamemaster' : 'player';
+            loadResources();
+            updateModeTexts();
+            updateButtonVisibility();
+            updateBodyClass();
+            renderResources();
+        }
+
+        // Update mode texts
+        function updateModeTexts() {
+            // No need to update config text since it's now just an icon
+            const gameModeToggle = document.getElementById('gameModeToggle');
+            if (gameModeToggle) {
+                gameModeToggle.textContent = gameMode === 'player' ? 'Spielleiter Modus' : 'Spieler Modus';
+            }
+        }
+
+        // Update button visibility based on modes
+        function updateButtonVisibility() {
+            const addBtn = document.getElementById('addResourceBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const gameModeToggle = document.getElementById('gameModeToggle');
+            
+            addBtn.style.display = isConfigMode ? 'block' : 'none';
+            resetBtn.style.display = isConfigMode ? 'block' : 'none';
+            gameModeToggle.style.display = isConfigMode ? 'block' : 'none';
+        }
+
+        // Update body class for background colors
+        function updateBodyClass() {
+            const body = document.body;
+            body.className = `${gameMode}-${isConfigMode ? 'config' : 'standard'}`;
+        }
+
         // Render all resources
         function renderResources() {
             const grid = document.getElementById('resourcesGrid');
@@ -742,8 +900,8 @@
                 const tracker = createResourceTracker(resource);
                 container.appendChild(tracker);
                 
-                // Add remove button for custom resources
-                if (!defaultResources.find(dr => dr.id === resource.id)) {
+                // Add remove button for custom resources in config mode
+                if (isConfigMode && !getCurrentDefaultResources().find(dr => dr.id === resource.id)) {
                     const removeBtn = document.createElement('button');
                     removeBtn.className = 'remove-resource-btn';
                     removeBtn.innerHTML = '×';
@@ -756,6 +914,11 @@
             });
         }
 
+        // Get current default resources based on game mode
+        function getCurrentDefaultResources() {
+            return gameMode === 'player' ? defaultPlayerResources : defaultGamemasterResources;
+        }
+
         // Create a resource tracker element
         function createResourceTracker(resource) {
             const tracker = document.createElement('div');
@@ -766,17 +929,26 @@
             
             tracker.innerHTML = `
                 <div class="resource-header">
-                    <h3 class="resource-name">${resource.name}</h3>
+                    ${isConfigMode ? 
+                        `<input
+                            type="text"
+                            class="resource-name-input"
+                            value="${resource.name}"
+                        />` : 
+                        `<h3 class="resource-name">${resource.name}</h3>`
+                    }
                     <div class="resource-values">
                         <span class="current-value">${resource.current}</span>
                         <span class="separator">/</span>
-                        <input
-                            type="number"
-                            class="max-value-input"
-                            value="${resource.max}"
-                            min="0"
-                            onchange="updateMax('${resource.id}', this.value)"
-                        />
+                        ${isConfigMode ? 
+                            `<input
+                                type="number"
+                                class="max-value-input"
+                                value="${resource.max}"
+                                min="0"
+                            />` : 
+                            `<span class="max-value">${resource.max}</span>`
+                        }
                     </div>
                 </div>
                 
@@ -790,20 +962,51 @@
                 <div class="resource-controls">
                     <button 
                         class="control-btn decrement"
-                        onclick="updateResource('${resource.id}', ${resource.current - 1})"
                         ${resource.current <= 0 ? 'disabled' : ''}
                     >
                         -
                     </button>
                     <button 
                         class="control-btn increment"
-                        onclick="updateResource('${resource.id}', ${resource.current + 1})"
                         ${resource.current >= resource.max ? 'disabled' : ''}
                     >
                         +
                     </button>
                 </div>
             `;
+            
+            // Add event listeners after creating the HTML
+            if (isConfigMode) {
+                const nameInput = tracker.querySelector('.resource-name-input');
+                const maxInput = tracker.querySelector('.max-value-input');
+                
+                if (nameInput) {
+                    nameInput.addEventListener('change', (e) => {
+                        updateResourceName(resource.id, e.target.value);
+                    });
+                }
+                
+                if (maxInput) {
+                    maxInput.addEventListener('change', (e) => {
+                        updateMax(resource.id, e.target.value);
+                    });
+                }
+            }
+            
+            const decrementBtn = tracker.querySelector('.decrement');
+            const incrementBtn = tracker.querySelector('.increment');
+            
+            if (decrementBtn) {
+                decrementBtn.addEventListener('click', () => {
+                    updateResource(resource.id, resource.current - 1);
+                });
+            }
+            
+            if (incrementBtn) {
+                incrementBtn.addEventListener('click', () => {
+                    updateResource(resource.id, resource.current + 1);
+                });
+            }
             
             return tracker;
         }
@@ -826,6 +1029,15 @@
                 resource.current = Math.min(resource.current, resource.max);
                 saveResources();
                 renderResources();
+            }
+        }
+
+        // Update resource name
+        function updateResourceName(resourceId, newName) {
+            const resource = resources.find(r => r.id === resourceId);
+            if (resource && newName.trim()) {
+                resource.name = newName.trim();
+                saveResources();
             }
         }
 
@@ -875,7 +1087,7 @@
         // Reset all resources
         function resetAll() {
             if (confirm('Möchten Sie alle Ressourcen auf ihre Standardwerte zurücksetzen?')) {
-                resources = [...defaultResources];
+                resources = gameMode === 'player' ? [...defaultPlayerResources] : [...defaultGamemasterResources];
                 saveResources();
                 renderResources();
             }

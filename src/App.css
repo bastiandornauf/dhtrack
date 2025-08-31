@@ -1,3 +1,20 @@
+/* Background colors for different modes */
+body.player-standard {
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+}
+
+body.player-config {
+  background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+}
+
+body.gamemaster-standard {
+  background: linear-gradient(135deg, #421c53 0%, #261e29 100%);
+}
+
+body.gamemaster-config {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+}
+
 .app {
   min-height: 100vh;
   padding: 20px;
@@ -9,37 +26,68 @@
   text-align: center;
   margin-bottom: 40px;
   color: white;
+  position: relative;
+  padding-top: 10px;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.daggerheart-logo {
+  width: 55px;
+  height: 55px;
+  display: block;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
 .mode-toggles {
   display: flex;
   gap: 10px;
   justify-content: center;
-  margin-top: 15px;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.app-header button {
+.config-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
   background: linear-gradient(135deg, #f1c40f, #f39c12);
   color: white;
   border: none;
-  padding: 8px 16px;
-  border-radius: 8px;
+  padding: 12px;
+  border-radius: 50%;
   cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 600;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  z-index: 10;
 }
 
-.app-header button:hover {
-  transform: translateY(-1px);
+.config-btn:hover {
+  transform: translateY(-2px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
+.gear-icon {
+  width: 16px;
+  height: 16px;
+}
+
 .app-header h1 {
-  font-size: 3rem;
+  font-size: 1.4rem;
   font-weight: 700;
-  margin-bottom: 10px;
+  margin: 0;
   text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   -webkit-background-clip: text;
@@ -47,11 +95,7 @@
   background-clip: text;
 }
 
-.app-header p {
-  font-size: 1.2rem;
-  opacity: 0.9;
-  margin: 0;
-}
+
 
 .app-main {
   flex: 1;
@@ -146,11 +190,7 @@
   }
   
   .app-header h1 {
-    font-size: 2.2rem;
-  }
-  
-  .app-header p {
-    font-size: 1rem;
+    font-size: 1.8rem;
   }
   
   .controls {
@@ -172,7 +212,7 @@
 
 @media (max-width: 480px) {
   .app-header h1 {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
   }
   
   .resources-grid {
