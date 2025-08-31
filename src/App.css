@@ -54,6 +54,58 @@ body.gamemaster-config {
   border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
+.game-mode-toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.game-mode-toggle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.game-mode-toggle:hover::before {
+  left: 100%;
+}
+
+.game-mode-toggle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.game-mode-toggle:active {
+  transform: translateY(0);
+}
+
+.toggle-label {
+  font-weight: 600;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.toggle-icon {
+  font-size: 1.2rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
 .config-btn {
   position: absolute;
   top: 10px;

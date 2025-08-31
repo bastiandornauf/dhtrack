@@ -200,8 +200,17 @@ function App() {
         
         <div className="mode-toggles">
           {isConfigMode && (
-            <button onClick={toggleGameMode}>
-              {gameMode === 'player' ? 'SL' : 'Spieler'}
+            <button 
+              className="game-mode-toggle"
+              onClick={toggleGameMode}
+              title={`Wechseln zu ${gameMode === 'player' ? 'Spielleiter' : 'Spieler'} Modus`}
+            >
+              <span className="toggle-label">
+                {gameMode === 'player' ? 'Spieler' : 'Spielleiter'}
+              </span>
+              <span className="toggle-icon">
+                {gameMode === 'player' ? '🎭' : '⚔️'}
+              </span>
             </button>
           )}
         </div>
