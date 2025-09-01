@@ -209,6 +209,55 @@ body.gamemaster-config {
   align-items: center;
 }
 
+/* Toolbar and legal/footer additions */
+.toolbar .btn {
+  margin-right: .5rem;
+  padding: 10px 16px;
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 8px;
+  background: #11141a;
+  color: #fff;
+  cursor: pointer;
+}
+
+.panel-conditions {
+  margin: 1rem 0;
+  padding: .75rem 1rem;
+  border:1px solid #2a2f36;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+}
+
+.panel-conditions h3 {
+  margin:.2rem 0 .6rem 0;
+  font-size:1.1rem;
+  opacity:.85;
+}
+
+.panel-conditions label {
+  margin-right: 1rem;
+  user-select:none;
+}
+
+footer.legal {
+  margin:2rem 0;
+  font-size:.9rem;
+  opacity:.9;
+  color: #fff;
+}
+
+footer.legal a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.lang-select {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.2);
+}
+
 .remove-resource-btn {
   position: absolute;
   top: -10px;

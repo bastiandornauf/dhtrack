@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Daggerheart – Regelübersicht</title>
+<style>
+  :root { --bg:#0e0f12; --fg:#eef1f4; --muted:#aab3bd; --card:#16181d; --line:#2a2f36; }
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font-family:Inter, system-ui, Arial, sans-serif}
+  .wrap{max-width:1600px;margin:0 auto;padding:4rem 3rem;display:grid;gap:2rem}
+  h1{font-size:clamp(28px,3vw,44px);margin:0 0 1rem 0}
+  h2{font-size:clamp(20px,2vw,28px);margin:.2rem 0 1rem 0;color:var(--muted)}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.25rem}
+  .card h3{margin:.2rem 0 1rem 0;font-size:clamp(18px,1.6vw,24px)}
+  ul{margin:.2rem 0 0 1.1rem;line-height:1.5}
+  .cond{display:flex;gap:1rem;flex-wrap:wrap}
+  .badge{border:1px solid var(--line);border-radius:999px;padding:.35rem .7rem;background:#121419}
+  .footer{margin-top:1rem;color:var(--muted);font-size:.9rem}
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+  .btn{appearance:none;border:1px solid var(--line);background:#11141a;color:var(--fg);padding:.7rem 1rem;border-radius:10px;cursor:pointer}
+  .btn:hover{background:#0b0e13}
+  @media (max-width:1100px){ .grid{grid-template-columns:1fr 1fr} }
+  @media (max-width:700px){ .grid{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div>
+        <h1>Daggerheart – Spielerübersicht</h1>
+        <h2>Kompakte Referenz für den Spieltisch</h2>
+      </div>
+      <button class="btn" onclick="history.back()">Zurück zum Tracker</button>
+    </div>
+
+    <div class="grid">
+      <section class="card">
+        <h3>🎲 Duality Roll</h3>
+        <ul>
+          <li>2× d12 (Hope/Fear), höherer Würfel entscheidet.</li>
+          <li><strong>Pash</strong> (beide gleich) = kritischer Erfolg nach Regeltext.</li>
+          <li>Interpretation von Hope/Fear im Ergebnis narrativ klären.</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h3>✨ Hope (Start 2, Max 6)</h3>
+        <ul>
+          <li>Generisch: Help (1), Experience (1), Tag Team (3), Hope Feature (meist 3).</li>
+          <li>Timing: Generisches Hope vor dem Wurf; Features siehe Text.</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h3>💨 Stress (Start 6 Slots)</h3>
+        <ul>
+          <li>Markieren durch Moves, GM-Kosten, Gegner.</li>
+          <li>Voll → Vulnerable; kein Platz → statt Stress 1 HP.</li>
+          <li>Abbau per Rest/Features (Gruppenabsprachen gelten).</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h3>❤️ HP & 🛡️ Armor</h3>
+        <ul>
+          <li>HP: klassenabhängig; Armor: aus Ausrüstung.</li>
+          <li>Schaden über Thresholds (Minor/Major/Severe → 1/2/3 HP).</li>
+          <li>1 Armor-Slot → Schwere um 1 Stufe senken (wenn erlaubt).</li>
+        </ul>
+      </section>
+    </div>
+
+    <section class="card">
+      <h3>📌 Conditions</h3>
+      <div class="cond">
+        <span class="badge">👁️ Hidden</span>
+        <span class="badge">⛓️ Restrained</span>
+        <span class="badge">⚡ Vulnerable</span>
+      </div>
+    </section>
+
+    <div class="footer">
+      Kurzfassung für schnelle Tisch-Referenz. Details entnehmt ihr eurem Regelwerk/SRD und euren Hausregeln.
+    </div>
+  </div>
+</body>
+</html>
+
