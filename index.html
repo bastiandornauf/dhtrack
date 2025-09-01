@@ -177,13 +177,27 @@
 
         .controls {
             display: flex;
-            gap: 12px;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
             margin: 20px 0;
-            flex-wrap: wrap;
             max-width: 800px;
             margin-left: auto;
             margin-right: auto;
+        }
+
+        .controls-row {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .controls-divider {
+            width: 100%;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+            margin: 10px 0;
         }
 
         .add-resource-btn,
@@ -740,8 +754,29 @@
         }
 
         /* Toolbar and legal/footer additions */
-        .toolbar .btn { margin-right: .5rem; padding: 10px 16px; border: 1px solid rgba(0,0,0,0.15); border-radius: 8px; background: #11141a; color: #fff; cursor: pointer; }
-        .panel-conditions { margin: 1rem 0; padding: .75rem 1rem; border:1px solid #2a2f36; border-radius: 10px; background: rgba(255,255,255,0.06); color: #fff; }
+        .toolbar { 
+            display: flex; 
+            justify-content: center; 
+            margin: 20px 0; 
+        }
+        .toolbar .btn { 
+            margin-right: .5rem; 
+            padding: 10px 16px; 
+            border: 1px solid rgba(0,0,0,0.15); 
+            border-radius: 8px; 
+            background: #11141a; 
+            color: #fff; 
+            cursor: pointer; 
+        }
+        .panel-conditions { 
+            margin: 1rem auto; 
+            padding: .75rem 1rem; 
+            border:1px solid #2a2f36; 
+            border-radius: 10px; 
+            background: rgba(255,255,255,0.06); 
+            color: #fff; 
+            max-width: 800px;
+        }
         .panel-conditions h3 { margin:.2rem 0 .6rem 0; font-size:1.1rem; opacity:.85; }
         .condition-toggles {
             display: flex;
@@ -830,25 +865,33 @@
             </div>
             
             <div class="controls">
-                <button class="add-resource-btn" id="addResourceBtn" onclick="showAddForm()" style="display: none;">
-                    + Neue Ressource
-                </button>
-                <button class="reset-btn" id="resetBtn" onclick="resetAll()" style="display: none;">
-                    Zurücksetzen
-                </button>
-                <button class="export-btn" id="exportBtn" onclick="exportConfig()" style="display: none;">
-                    📤 Export
-                </button>
-                <button class="import-btn" id="importBtn" onclick="importConfig()" style="display: none;">
-                    📥 Import
-                </button>
-                <button class="share-btn" id="shareBtn" onclick="shareConfig()" style="display: none;">
-                    🔗 Teilen
-                </button>
-                <select id="langSelect" class="lang-select" style="display:none" aria-label="Sprache">
-                    <option value="de">Deutsch</option>
-                    <option value="en">English</option>
-                </select>
+                <div class="controls-row">
+                    <button class="add-resource-btn" id="addResourceBtn" onclick="showAddForm()" style="display: none;">
+                        + Neue Ressource
+                    </button>
+                    <button class="reset-btn" id="resetBtn" onclick="resetAll()" style="display: none;">
+                        Zurücksetzen
+                    </button>
+                </div>
+                <div class="controls-divider"></div>
+                <div class="controls-row">
+                    <button class="export-btn" id="exportBtn" onclick="exportConfig()" style="display: none;">
+                        📤 Export
+                    </button>
+                    <button class="import-btn" id="importBtn" onclick="importConfig()" style="display: none;">
+                        📥 Import
+                    </button>
+                    <button class="share-btn" id="shareBtn" onclick="shareConfig()" style="display: none;">
+                        🔗 Teilen
+                    </button>
+                </div>
+                <div class="controls-divider"></div>
+                <div class="controls-row">
+                    <select id="langSelect" class="lang-select" style="display:none" aria-label="Sprache">
+                        <option value="de">Deutsch</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
             </div>
             <div class="toolbar" id="toolbar">
                 <button id="btn-rules" class="btn">📖 Regelübersicht</button>
@@ -866,7 +909,7 @@
                     <span class="toggle-icon" id="gameModeIcon">⚔️</span>
                 </button>
             </div>
-                    <section class="panel panel-conditions" aria-label="Conditions">
+                    <section class="panel panel-conditions" aria-label="Conditions" id="conditionsPanel" style="display: none;">
           <h3>Conditions</h3>
           <div class="condition-toggles">
             <label class="condition-toggle">
@@ -890,19 +933,19 @@
     </div>
 
     <footer class="legal">
-      <p><strong>Daggerheart Tracker</strong> – Fan-made tool. Not affiliated with Darrington Press or Critical Role.</p>
+      <p><strong id="footerTitle">Daggerheart Tracker</strong> – Fan-made tool. Not affiliated with Darrington Press or Critical Role.</p>
       <p>
-        Licensed use under the
-        <a href="https://darringtonpress.com/license/" target="_blank" rel="noopener">Darrington Press Community Gaming License (DPCGL)</a>.
-        Daggerheart SRD: <a href="https://www.daggerheart.com/srd/" target="_blank" rel="noopener">daggerheart.com/srd</a>.
+        <span id="footerLicenseLead">Licensed use under the</span>
+        <a href="https://darringtonpress.com/license/" target="_blank" rel="noopener" id="footerLicenseName">Darrington Press Community Gaming License (DPCGL)</a>.
+        <span id="footerSrdLead">Daggerheart SRD:</span> <a href="https://www.daggerheart.com/srd/" target="_blank" rel="noopener">daggerheart.com/srd</a>.
       </p>
-      <p class="privacy">
+      <p class="privacy" id="footerPrivacy">
         Datenschutz: Dieses Tool speichert Daten ausschließlich lokal in deinem Browser (Local Storage).
         Es werden keine personenbezogenen Daten übertragen. Export/Import erfolgt als JSON auf deinem Gerät.
       </p>
       <p class="meta">
-        Impressum: <a href="https://bdornauf.de" target="_blank" rel="noopener">bdornauf.de</a>
-        &nbsp;•&nbsp; v0.4.0 &nbsp;•&nbsp; © 2025 B. Dornauf
+        <span id="footerMeta">Impressum:</span> <a href="https://bdornauf.de" target="_blank" rel="noopener">bdornauf.de</a>
+        &nbsp;•&nbsp; <span id="footerVersion">v0.4.0</span> &nbsp;•&nbsp; © 2025 B. Dornauf
       </p>
     </footer>
 
@@ -1033,7 +1076,7 @@
             reset: 'Zurücksetzen',
             confirmReset: 'Möchten Sie alle Ressourcen auf ihre Standardwerte zurücksetzen?',
             configMode: 'Config Modus',
-            toggleToGM: 'Wechseln zu Spielleiter Modus',
+            toggleToGamemaster: 'Wechseln zu Spielleiter Modus',
             toggleToPlayer: 'Wechseln zu Spieler Modus',
             player: 'Spieler',
             gamemaster: 'Spielleiter',
@@ -1070,7 +1113,7 @@
             reset: 'Reset',
             confirmReset: 'Do you want to reset all resources to their defaults?',
             configMode: 'Config Mode',
-            toggleToGM: 'Switch to Gamemaster mode',
+            toggleToGamemaster: 'Switch to Gamemaster mode',
             toggleToPlayer: 'Switch to Player mode',
             player: 'Player',
             gamemaster: 'Gamemaster',
@@ -1138,8 +1181,21 @@
           document.querySelector('.form-actions .btn-primary').textContent = t('formSubmit');
           
           // Update footer
-          const footerTitle = document.querySelector('footer.legal p:first-child strong');
+          const footerTitle = document.getElementById('footerTitle');
+          const footerLicenseLead = document.getElementById('footerLicenseLead');
+          const footerLicenseName = document.getElementById('footerLicenseName');
+          const footerSrdLead = document.getElementById('footerSrdLead');
+          const footerPrivacy = document.getElementById('footerPrivacy');
+          const footerMeta = document.getElementById('footerMeta');
+          const footerVersion = document.getElementById('footerVersion');
+          
           if (footerTitle) footerTitle.textContent = t('footerTitle');
+          if (footerLicenseLead) footerLicenseLead.textContent = t('footerLicenseLead');
+          if (footerLicenseName) footerLicenseName.textContent = t('footerLicenseName');
+          if (footerSrdLead) footerSrdLead.textContent = t('footerSrdLead');
+          if (footerPrivacy) footerPrivacy.textContent = t('footerPrivacy');
+          if (footerMeta) footerMeta.textContent = t('footerMeta');
+          if (footerVersion) footerVersion.textContent = t('version');
           
           // Update game mode toggle text
           updateModeTexts();
@@ -1262,14 +1318,22 @@
             const shareBtn = document.getElementById('shareBtn');
             const gameModeToggle = document.getElementById('gameModeToggle');
             const langSelect = document.getElementById('langSelect');
+            const conditionsPanel = document.getElementById('conditionsPanel');
             
-            addBtn.style.display = isConfigMode ? 'block' : 'none';
-            resetBtn.style.display = isConfigMode ? 'block' : 'none';
-            exportBtn.style.display = isConfigMode ? 'block' : 'none';
-            importBtn.style.display = isConfigMode ? 'block' : 'none';
-            shareBtn.style.display = isConfigMode ? 'block' : 'none';
-            gameModeToggle.style.display = isConfigMode ? 'block' : 'none';
+            const displayMode = isConfigMode ? 'block' : 'none';
+            
+            addBtn.style.display = displayMode;
+            resetBtn.style.display = displayMode;
+            exportBtn.style.display = displayMode;
+            importBtn.style.display = displayMode;
+            shareBtn.style.display = displayMode;
+            gameModeToggle.style.display = displayMode;
             langSelect.style.display = isConfigMode ? 'inline-block' : 'none';
+            
+            // Show conditions only in player mode
+            if (conditionsPanel) {
+                conditionsPanel.style.display = (gameMode === 'player') ? 'block' : 'none';
+            }
         }
 
         // Update body class for background colors
