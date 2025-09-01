@@ -267,8 +267,8 @@
 
         .resources-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
             justify-items: center;
         }
 
@@ -281,27 +281,14 @@
         .resource-tracker {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 12px;
-            padding: 20px;
-            margin: 15px;
+            padding: 18px;
+            margin: 12px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             border: 3px solid;
             backdrop-filter: blur(10px);
             transition: all 0.3s ease;
-            min-width: 280px;
-            max-width: 350px;
-        }
-
-        .resource-tracker {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 12px;
-            padding: 20px;
-            margin: 15px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            border: 3px solid;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-            min-width: 280px;
-            max-width: 350px;
+            min-width: 260px;
+            max-width: 320px;
         }
 
         .resource-tracker:hover {
@@ -703,15 +690,15 @@
             }
             
             .resources-grid {
-                grid-template-columns: 1fr;
-                gap: 15px;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
             }
             
             .resource-tracker {
-                min-width: 250px;
-                max-width: 300px;
+                min-width: 220px;
+                max-width: 280px;
                 padding: 15px;
-                margin: 10px;
+                margin: 8px;
             }
             
             .resource-name {
@@ -749,7 +736,21 @@
             }
             
             .resources-grid {
-                gap: 10px;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+            
+            .resource-tracker {
+                min-width: 200px;
+                max-width: 250px;
+                padding: 12px;
+                margin: 6px;
+            }
+            
+            .control-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
             }
         }
 
@@ -783,6 +784,7 @@
             gap: 1rem;
             flex-wrap: wrap;
             margin-top: 0.5rem;
+            justify-content: center;
         }
 
         .condition-toggle {
@@ -945,7 +947,7 @@
       </p>
       <p class="meta">
         <span id="footerMeta">Impressum:</span> <a href="https://bdornauf.de" target="_blank" rel="noopener">bdornauf.de</a>
-        &nbsp;•&nbsp; <span id="footerVersion">v0.4.0</span> &nbsp;•&nbsp; © 2025 B. Dornauf
+        &nbsp;•&nbsp; <span id="footerVersion">v0.9.0</span> &nbsp;•&nbsp; © 2025 B. Dornauf
       </p>
     </footer>
 
@@ -1105,7 +1107,7 @@
             footerSrdLead: 'Daggerheart SRD:',
             footerPrivacy: 'Datenschutz: Dieses Tool speichert Daten ausschließlich lokal in deinem Browser (Local Storage). Es werden keine personenbezogenen Daten übertragen. Export/Import erfolgt als JSON auf deinem Gerät.',
             footerMeta: 'Impressum',
-            version: 'v0.4.0'
+            version: 'v0.9.0'
           },
           en: {
             title: 'Daggerheart Tracker',
@@ -1142,7 +1144,7 @@
             footerSrdLead: 'Daggerheart SRD:',
             footerPrivacy: 'Privacy: This tool stores data only locally in your browser (Local Storage). No personal data is transmitted. Export/Import happens as JSON on your device.',
             footerMeta: 'Imprint',
-            version: 'v0.4.0'
+            version: 'v0.9.0'
           }
         };
 
@@ -1329,6 +1331,12 @@
             shareBtn.style.display = displayMode;
             gameModeToggle.style.display = displayMode;
             langSelect.style.display = isConfigMode ? 'inline-block' : 'none';
+            
+            // Update divider visibility
+            const dividers = document.querySelectorAll('.controls-divider');
+            dividers.forEach(divider => {
+                divider.style.display = isConfigMode ? 'block' : 'none';
+            });
             
             // Show conditions only in player mode
             if (conditionsPanel) {

@@ -20,8 +20,12 @@
   .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
   .btn{appearance:none;border:1px solid var(--line);background:#11141a;color:var(--fg);padding:.7rem 1rem;border-radius:10px;cursor:pointer}
   .btn:hover{background:#0b0e13}
+  .cond{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:1rem}
+  .column{display:flex;flex-direction:column;gap:.75rem;align-items:center;text-align:left}
+  .condition-detail{line-height:1.4;color:var(--muted);font-size:.9rem}
   @media (max-width:1100px){ .grid{grid-template-columns:1fr 1fr} }
   @media (max-width:700px){ .grid{grid-template-columns:1fr} }
+  @media (max-width:900px){ .cond{grid-template-columns:1fr;gap:1rem} }
 </style>
 </head>
 <body>
@@ -38,26 +42,29 @@
       <section class="card">
         <h3>🎲 Duality Roll</h3>
         <ul>
-          <li>2× d12 (Hope/Fear), higher die decides.</li>
-          <li><strong>Pash</strong> (both equal) = critical success per rule text.</li>
+          <li>2× d12 (Hope/Fear), higher die decides hope or fear.</li>
+          <li>sum of both dice + bonuses decides if success or failure</li>
+          <li>both dice equal = critical success per rule text.</li>
           <li>Interpret Hope/Fear in result narratively.</li>
+          <li>gain ressources accordingly (player +1 hope, gamemaster +1 fear)</li>
         </ul>
       </section>
 
       <section class="card">
         <h3>✨ Hope (Start 2, Max 6)</h3>
         <ul>
-          <li>Generic: Help (1), Experience (1), Tag Team (3), Hope Feature (usually 3).</li>
+          <li>Generic Usage: Help - give advantage (1), Use experience - give bonus (1), Tag Team (3), Hope Feature (usually 3), Pay Features (?).</li>
           <li>Timing: Generic Hope before roll; Features see text.</li>
+
         </ul>
       </section>
 
       <section class="card">
-        <h3>💨 Stress (Start 6 Slots)</h3>
+        <h3>💨 Stress (Start  6 Slots)</h3>
         <ul>
           <li>Mark through moves, GM costs, opponents.</li>
           <li>Full → Vulnerable; no space → instead of Stress 1 HP.</li>
-          <li>Reduce through Rest/Features (group agreements apply).</li>
+          <li>Reduce through Rest/Features.</li>
         </ul>
       </section>
 
@@ -65,8 +72,9 @@
         <h3>❤️ HP & 🛡️ Armor</h3>
         <ul>
           <li>HP: class-dependent; Armor: from equipment.</li>
-          <li>Damage over thresholds (Minor/Major/Severe → 1/2/3 HP).</li>
+          <li>Damage >= thresholds (Minor/Major/Severe → 1/2/3 HP).</li>
           <li>1 Armor slot → reduce Severe by 1 level (if allowed).</li>
+          <li>Reduce through Rest/Features.</li>
         </ul>
       </section>
     </div>
@@ -74,15 +82,29 @@
     <section class="card">
       <h3>📌 Conditions</h3>
       <div class="cond">
+        <span class="column">
         <span class="badge">👁️ Hidden</span>
-        <span class="badge">⛓️ Restrained</span>
+        <span class="condition-detail">Any rolls against a Hidden creature have
+          disadvantage. After an adversary moves to where they
+          would see you, you move into their line of sight, or you
+          make an attack, you are no longer Hidden.</span>
+        </span>
+
+        <span class="column">
+          <span class="badge">⛓️ Restrained</span>
+        <span class="condition-detail" >Held/bound.  can’t move, but  can still take
+          actions from their current position.
+        </span> 
+
+        </span>
+
+        <span class="column">
+
         <span class="badge">⚡ Vulnerable</span>
+        <span class="condition-detail">Exposed/unprotected. all rolls targeting them have advantage. </span>
+        </span>
+        
       </div>
-      <ul>
-        <li><strong>Hidden:</strong> Concealed, hard to detect. +2 to Stealth rolls, -2 to attacks against you.</li>
-        <li><strong>Restrained:</strong> Held/bound. Cannot move, -2 to all rolls.</li>
-        <li><strong>Vulnerable:</strong> Exposed/unprotected. +2 damage from all sources.</li>
-      </ul>
     </section>
 
     <div class="footer">

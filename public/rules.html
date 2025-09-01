@@ -14,7 +14,11 @@
   .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.25rem}
   .card h3{margin:.2rem 0 1rem 0;font-size:clamp(18px,1.6vw,24px)}
   ul{margin:.2rem 0 0 1.1rem;line-height:1.5}
-  .cond{display:flex;gap:1rem;flex-wrap:wrap}
+  .condition-details{margin-top:1rem;display:flex;flex-direction:column;gap:.5rem}
+  .condition-detail{line-height:1.4;color:var(--muted);padding-left:.5rem;border-left:2px solid var(--line)}
+  .cond{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:1rem}
+  .column{display:flex;flex-direction:column;gap:.75rem;align-items:center;text-align:left}
+  .condition-detail{line-height:1.4;color:var(--muted);font-size:.9rem}
   .badge{border:1px solid var(--line);border-radius:999px;padding:.35rem .7rem;background:#121419}
   .footer{margin-top:1rem;color:var(--muted);font-size:.9rem}
   .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
@@ -22,6 +26,7 @@
   .btn:hover{background:#0b0e13}
   @media (max-width:1100px){ .grid{grid-template-columns:1fr 1fr} }
   @media (max-width:700px){ .grid{grid-template-columns:1fr} }
+  @media (max-width:900px){ .cond{grid-template-columns:1fr;gap:1rem} }
 </style>
 </head>
 <body>
@@ -38,16 +43,18 @@
       <section class="card">
         <h3>🎲 Duality Roll</h3>
         <ul>
-          <li>2× d12 (Hope/Fear), höherer Würfel entscheidet.</li>
-          <li><strong>Pash</strong> (beide gleich) = kritischer Erfolg nach Regeltext.</li>
+          <li>2× d12 (Hope/Fear), höherer Würfel entscheidet Hope oder Fear.</li>
+          <li>Summe beider Würfel + Boni entscheidet über Erfolg oder Misserfolg.</li>
+          <li>Beide Würfel gleich = kritischer Erfolg nach Regeltext.</li>
           <li>Interpretation von Hope/Fear im Ergebnis narrativ klären.</li>
+          <li>Ressourcen entsprechend gewinnen (Spieler +1 Hope, Spielleiter +1 Fear).</li>
         </ul>
       </section>
 
       <section class="card">
         <h3>✨ Hope (Start 2, Max 6)</h3>
         <ul>
-          <li>Generisch: Help (1), Experience (1), Tag Team (3), Hope Feature (meist 3).</li>
+          <li>Generische Nutzung: Help - Vorteil geben (1), Experience nutzen - Bonus geben (1), Tag Team (3), Hope Feature (meist 3), Features bezahlen (?).</li>
           <li>Timing: Generisches Hope vor dem Wurf; Features siehe Text.</li>
         </ul>
       </section>
@@ -57,7 +64,7 @@
         <ul>
           <li>Markieren durch Moves, GM-Kosten, Gegner.</li>
           <li>Voll → Vulnerable; kein Platz → statt Stress 1 HP.</li>
-          <li>Abbau per Rest/Features (Gruppenabsprachen gelten).</li>
+          <li>Abbau per Rest/Features.</li>
         </ul>
       </section>
 
@@ -65,24 +72,31 @@
         <h3>❤️ HP & 🛡️ Armor</h3>
         <ul>
           <li>HP: klassenabhängig; Armor: aus Ausrüstung.</li>
-          <li>Schaden über Thresholds (Minor/Major/Severe → 1/2/3 HP).</li>
+          <li>Schaden >= Thresholds (Minor/Major/Severe → 1/2/3 HP).</li>
           <li>1 Armor-Slot → Schwere um 1 Stufe senken (wenn erlaubt).</li>
+          <li>Abbau per Rest/Features.</li>
         </ul>
       </section>
     </div>
 
     <section class="card">
-      <h3>📌 Conditions</h3>
-      <div class="cond">
-        <span class="badge">👁️ Hidden</span>
-        <span class="badge">⛓️ Restrained</span>
-        <span class="badge">⚡ Vulnerable</span>
-      </div>
-      <ul>
-        <li><strong>Hidden:</strong> Versteckt, schwer zu entdecken. +2 auf Stealth-Würfe, -2 auf Angriffe gegen dich.</li>
-        <li><strong>Restrained:</strong> Festgehalten/gefesselt. Kann sich nicht bewegen, -2 auf alle Würfe.</li>
-        <li><strong>Vulnerable:</strong> Verwundbar/ungeschützt. +2 Schaden von allen Quellen.</li>
-      </ul>
+              <h3>📌 Conditions</h3>
+        <div class="cond">
+          <div class="column">
+            <span class="badge">👁️ Hidden</span>
+            <div class="condition-detail">Alle Würfe gegen eine versteckte Kreatur haben Nachteil. Nachdem ein Gegner sich dorthin bewegt, wo er dich sehen würde, du dich in seine Sichtlinie bewegst oder einen Angriff machst, bist du nicht mehr versteckt.</div>
+          </div>
+
+          <div class="column">
+            <span class="badge">⛓️ Restrained</span>
+            <div class="condition-detail">Festgehalten/gefesselt. Kann sich nicht bewegen, kann aber noch Aktionen von der aktuellen Position aus durchführen.</div>
+          </div>
+
+          <div class="column">
+            <span class="badge">⚡ Vulnerable</span>
+            <div class="condition-detail">Verwundbar/ungeschützt. Alle Würfe gegen sie haben Vorteil.</div>
+          </div>
+        </div>
     </section>
 
     <div class="footer">
