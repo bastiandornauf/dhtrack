@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Resource } from '../types';
 import './AddResourceForm.css';
+import { useI18n } from '../i18n';
 
 interface AddResourceFormProps {
   onAddResource: (resource: Omit<Resource, 'id'>) => void;
@@ -8,6 +9,7 @@ interface AddResourceFormProps {
 }
 
 const AddResourceForm: React.FC<AddResourceFormProps> = ({ onAddResource, onClose }) => {
+  const { t } = useI18n();
   const [name, setName] = useState('');
   const [current, setCurrent] = useState(0);
   const [max, setMax] = useState(10);
@@ -36,26 +38,26 @@ const AddResourceForm: React.FC<AddResourceFormProps> = ({ onAddResource, onClos
     <div className="add-resource-overlay">
       <div className="add-resource-modal">
         <div className="modal-header">
-          <h2>Neue Ressource hinzufügen</h2>
+          <h2>{t('formTitleAddResource')}</h2>
           <button className="close-btn" onClick={onClose}>×</button>
         </div>
         
         <form onSubmit={handleSubmit} className="add-resource-form">
           <div className="form-group">
-            <label htmlFor="resource-name">Name:</label>
+            <label htmlFor="resource-name">{t('formName')}</label>
             <input
               id="resource-name"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="z.B. Mana, Rage, Inspiration..."
+              placeholder={t('formNamePlaceholder')}
               required
             />
           </div>
           
           <div className="form-row">
             <div className="form-group">
-              <label htmlFor="resource-current">Aktueller Wert:</label>
+              <label htmlFor="resource-current">{t('formCurrent')}</label>
               <input
                 id="resource-current"
                 type="number"
@@ -67,7 +69,7 @@ const AddResourceForm: React.FC<AddResourceFormProps> = ({ onAddResource, onClos
             </div>
             
             <div className="form-group">
-              <label htmlFor="resource-max">Maximaler Wert:</label>
+              <label htmlFor="resource-max">{t('formMax')}</label>
               <input
                 id="resource-max"
                 type="number"
@@ -79,7 +81,7 @@ const AddResourceForm: React.FC<AddResourceFormProps> = ({ onAddResource, onClos
           </div>
           
           <div className="form-group">
-            <label>Farbe:</label>
+            <label>{t('formColor')}</label>
             <div className="color-picker">
               {predefinedColors.map((c) => (
                 <button
@@ -95,10 +97,10 @@ const AddResourceForm: React.FC<AddResourceFormProps> = ({ onAddResource, onClos
           
           <div className="form-actions">
             <button type="button" className="btn-secondary" onClick={onClose}>
-              Abbrechen
+              {t('formCancel')}
             </button>
             <button type="submit" className="btn-primary">
-              Hinzufügen
+              {t('formSubmit')}
             </button>
           </div>
         </form>
