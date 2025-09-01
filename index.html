@@ -177,10 +177,13 @@
 
         .controls {
             display: flex;
-            gap: 16px;
+            gap: 12px;
             justify-content: center;
-            margin-top: 30px;
+            margin: 20px 0;
             flex-wrap: wrap;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .add-resource-btn,
@@ -740,8 +743,69 @@
         .toolbar .btn { margin-right: .5rem; padding: 10px 16px; border: 1px solid rgba(0,0,0,0.15); border-radius: 8px; background: #11141a; color: #fff; cursor: pointer; }
         .panel-conditions { margin: 1rem 0; padding: .75rem 1rem; border:1px solid #2a2f36; border-radius: 10px; background: rgba(255,255,255,0.06); color: #fff; }
         .panel-conditions h3 { margin:.2rem 0 .6rem 0; font-size:1.1rem; opacity:.85; }
+        .condition-toggles {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        .condition-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+        }
+
+        .condition-toggle input[type="checkbox"] {
+            display: none;
+        }
+
+        .toggle-slider {
+            width: 50px;
+            height: 26px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 13px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-slider:before {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .condition-toggle input[type="checkbox"]:checked + .toggle-slider {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .condition-toggle input[type="checkbox"]:checked + .toggle-slider:before {
+            transform: translateX(24px);
+            background: white;
+        }
+
+        .condition-label {
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .condition-toggle:hover .toggle-slider {
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
         .panel-conditions label { margin-right: 1rem; user-select:none; }
-        footer.legal { margin:2rem 0; font-size:.9rem; opacity:.9; color: #fff; }
+        footer.legal { margin:2rem 0; font-size:.7rem; opacity:.79; color: #fff; }        
         footer.legal a { color: inherit; text-decoration: underline; }
         .lang-select { padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.2); }
     </style>
@@ -772,6 +836,15 @@
                 <button class="reset-btn" id="resetBtn" onclick="resetAll()" style="display: none;">
                     Zurücksetzen
                 </button>
+                <button class="export-btn" id="exportBtn" onclick="exportConfig()" style="display: none;">
+                    📤 Export
+                </button>
+                <button class="import-btn" id="importBtn" onclick="importConfig()" style="display: none;">
+                    📥 Import
+                </button>
+                <button class="share-btn" id="shareBtn" onclick="shareConfig()" style="display: none;">
+                    🔗 Teilen
+                </button>
                 <select id="langSelect" class="lang-select" style="display:none" aria-label="Sprache">
                     <option value="de">Deutsch</option>
                     <option value="en">English</option>
@@ -779,8 +852,6 @@
             </div>
             <div class="toolbar" id="toolbar">
                 <button id="btn-rules" class="btn">📖 Regelübersicht</button>
-                <button id="btn-short-rest" class="btn">💤 Short Rest</button>
-                <button id="btn-long-rest" class="btn">🛌 Long Rest</button>
             </div>
             
             <div class="mode-toggles">
@@ -795,12 +866,26 @@
                     <span class="toggle-icon" id="gameModeIcon">⚔️</span>
                 </button>
             </div>
-            <section class="panel panel-conditions" aria-label="Conditions">
-              <h3>Conditions</h3>
-              <label><input type="checkbox" id="cond-hidden"> 👁️ Hidden</label>
-              <label><input type="checkbox" id="cond-restrained"> ⛓️ Restrained</label>
-              <label><input type="checkbox" id="cond-vulnerable"> ⚡ Vulnerable</label>
-            </section>
+                    <section class="panel panel-conditions" aria-label="Conditions">
+          <h3>Conditions</h3>
+          <div class="condition-toggles">
+            <label class="condition-toggle">
+              <input type="checkbox" id="cond-hidden">
+              <span class="toggle-slider"></span>
+              <span class="condition-label">👁️ Hidden</span>
+            </label>
+            <label class="condition-toggle">
+              <input type="checkbox" id="cond-restrained">
+              <span class="toggle-slider"></span>
+              <span class="condition-label">⛓️ Restrained</span>
+            </label>
+            <label class="condition-toggle">
+              <input type="checkbox" id="cond-vulnerable">
+              <span class="toggle-slider"></span>
+              <span class="condition-label">⚡ Vulnerable</span>
+            </label>
+          </div>
+        </section>
         </main>
     </div>
 
@@ -883,6 +968,8 @@
     </div>
 
     <script>
+
+        
         // Default resources for player mode
         const defaultPlayerResources = [
             {
@@ -948,6 +1035,8 @@
             configMode: 'Config Modus',
             toggleToGM: 'Wechseln zu Spielleiter Modus',
             toggleToPlayer: 'Wechseln zu Spieler Modus',
+            player: 'Spieler',
+            gamemaster: 'Spielleiter',
             rules: '📖 Regelübersicht',
             shortRest: '💤 Short Rest',
             longRest: '🛌 Long Rest',
@@ -962,7 +1051,18 @@
             formMax: 'Maximaler Wert:',
             formColor: 'Farbe:',
             formCancel: 'Abbrechen',
-            formSubmit: 'Hinzufügen'
+            formSubmit: 'Hinzufügen',
+            export: '📤 Export',
+            import: '📥 Import',
+            share: '🔗 Teilen',
+            language: 'Sprache',
+            footerTitle: 'Daggerheart Tracker – Fan-made tool. Not affiliated with Darrington Press or Critical Role.',
+            footerLicenseLead: 'Licensed use under the',
+            footerLicenseName: 'Darrington Press Community Gaming License (DPCGL)',
+            footerSrdLead: 'Daggerheart SRD:',
+            footerPrivacy: 'Datenschutz: Dieses Tool speichert Daten ausschließlich lokal in deinem Browser (Local Storage). Es werden keine personenbezogenen Daten übertragen. Export/Import erfolgt als JSON auf deinem Gerät.',
+            footerMeta: 'Impressum',
+            version: 'v0.4.0'
           },
           en: {
             title: 'Daggerheart Tracker',
@@ -972,6 +1072,8 @@
             configMode: 'Config Mode',
             toggleToGM: 'Switch to Gamemaster mode',
             toggleToPlayer: 'Switch to Player mode',
+            player: 'Player',
+            gamemaster: 'Gamemaster',
             rules: '📖 Rules Overview',
             shortRest: '💤 Short Rest',
             longRest: '🛌 Long Rest',
@@ -986,7 +1088,18 @@
             formMax: 'Max:',
             formColor: 'Color:',
             formCancel: 'Cancel',
-            formSubmit: 'Add'
+            formSubmit: 'Add',
+            export: '📤 Export',
+            import: '📥 Import',
+            share: '🔗 Share',
+            language: 'Language',
+            footerTitle: 'Daggerheart Tracker – Fan-made tool. Not affiliated with Darrington Press or Critical Role.',
+            footerLicenseLead: 'Licensed use under the',
+            footerLicenseName: 'Darrington Press Community Gaming License (DPCGL)',
+            footerSrdLead: 'Daggerheart SRD:',
+            footerPrivacy: 'Privacy: This tool stores data only locally in your browser (Local Storage). No personal data is transmitted. Export/Import happens as JSON on your device.',
+            footerMeta: 'Imprint',
+            version: 'v0.4.0'
           }
         };
 
@@ -1006,20 +1119,30 @@
           document.querySelector('.app-header h1').textContent = t('title');
           document.getElementById('addResourceBtn').textContent = t('addResource');
           document.getElementById('resetBtn').textContent = t('reset');
+          document.getElementById('exportBtn').textContent = t('export');
+          document.getElementById('importBtn').textContent = t('import');
+          document.getElementById('shareBtn').textContent = t('share');
           document.getElementById('btn-rules').textContent = t('rules');
-          document.getElementById('btn-short-rest').textContent = t('shortRest');
-          document.getElementById('btn-long-rest').textContent = t('longRest');
           const panelTitle = document.querySelector('.panel-conditions h3');
           if (panelTitle) panelTitle.textContent = t('conditions');
-          document.querySelector('label[for="resource-name"]')?.replaceChildren(document.createTextNode(t('formName')));
+          const nameLabel = document.querySelector('label[for="resource-name"]');
+          if (nameLabel) nameLabel.replaceChildren(document.createTextNode(t('formName')));
           const nameInput = document.getElementById('resource-name');
           if (nameInput) nameInput.setAttribute('placeholder', t('formNamePlaceholder'));
           document.querySelector('label[for="resource-current"]').textContent = t('formCurrent');
           document.querySelector('label[for="resource-max"]').textContent = t('formMax');
           document.querySelector('.modal-header h2').textContent = t('formTitle');
-          document.querySelector('.form-group label')?.textContent = t('formName');
+          const formGroupLabel = document.querySelector('.form-group label');
+          if (formGroupLabel) formGroupLabel.textContent = t('formName');
           document.querySelector('.form-actions .btn-secondary').textContent = t('formCancel');
           document.querySelector('.form-actions .btn-primary').textContent = t('formSubmit');
+          
+          // Update footer
+          const footerTitle = document.querySelector('footer.legal p:first-child strong');
+          if (footerTitle) footerTitle.textContent = t('footerTitle');
+          
+          // Update game mode toggle text
+          updateModeTexts();
         }
 
         // Initialize the app
@@ -1041,9 +1164,9 @@
               applyTranslations();
             });
             // Toolbar actions
-            document.getElementById('btn-rules').addEventListener('click', () => { window.location.href = 'public/rules.html'; });
-            document.getElementById('btn-short-rest').addEventListener('click', applyShortRest);
-            document.getElementById('btn-long-rest').addEventListener('click', applyLongRest);
+            document.getElementById('btn-rules').addEventListener('click', () => { 
+                window.location.href = currentLang === 'en' ? 'public/rules-en.html' : 'public/rules.html'; 
+            });
             // Initial translations
             applyTranslations();
         }
@@ -1052,7 +1175,12 @@
         function loadResources() {
             const saved = localStorage.getItem(`daggerheart-resources-${gameMode}`);
             if (saved) {
-                resources = JSON.parse(saved);
+                try {
+                    resources = JSON.parse(saved);
+                } catch (error) {
+                    console.error('Error parsing localStorage:', error);
+                    resources = gameMode === 'player' ? [...defaultPlayerResources] : [...defaultGamemasterResources];
+                }
             } else {
                 resources = gameMode === 'player' ? [...defaultPlayerResources] : [...defaultGamemasterResources];
             }
@@ -1116,10 +1244,10 @@
             
             if (gameModeToggle && gameModeText && gameModeIcon) {
                 if (gameMode === 'player') {
-                    gameModeText.textContent = 'Spielleiter Modus';
+                    gameModeText.textContent = t('toggleToGamemaster');
                     gameModeIcon.textContent = '⚔️';
                 } else {
-                    gameModeText.textContent = 'Spieler Modus';
+                    gameModeText.textContent = t('toggleToPlayer');
                     gameModeIcon.textContent = '🎭';
                 }
             }
@@ -1153,9 +1281,18 @@
         // Render all resources
         function renderResources() {
             const grid = document.getElementById('resourcesGrid');
+            if (!grid) {
+                console.error('resourcesGrid element not found!');
+                return;
+            }
+            
             grid.innerHTML = '';
             
-            resources.forEach(resource => {
+            if (!resources || resources.length === 0) {
+                return;
+            }
+            
+            resources.forEach((resource, index) => {
                 const container = document.createElement('div');
                 container.className = 'resource-container';
                 
@@ -1420,10 +1557,196 @@
           renderResources();
         }
 
+        // Load configuration from URL parameters
+        function loadConfigFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const configParam = urlParams.get('config');
+            
+            if (configParam) {
+                try {
+                    const config = JSON.parse(decodeURIComponent(configParam));
+                    
+                    // Load resources from URL config
+                    if (config.resources && Array.isArray(config.resources)) {
+                        resources = config.resources;
+                        saveResources();
+                    }
+                    
+                    // Load game mode from URL config
+                    if (config.gameMode && (config.gameMode === 'player' || config.gameMode === 'gamemaster')) {
+                        gameMode = config.gameMode;
+                    }
+                    
+                    // Load conditions from URL config
+                    if (config.conditions) {
+                        if (config.conditions.hidden !== undefined) {
+                            localStorage.setItem('dh_cond_hidden', config.conditions.hidden ? '1' : '0');
+                        }
+                        if (config.conditions.restrained !== undefined) {
+                            localStorage.setItem('dh_cond_restrained', config.conditions.restrained ? '1' : '0');
+                        }
+                        if (config.conditions.vulnerable !== undefined) {
+                            localStorage.setItem('dh_cond_vulnerable', config.conditions.vulnerable ? '1' : '0');
+                        }
+                    }
+                    
+                    // Re-render everything with the loaded config
+                    updateModeTexts();
+                    updateButtonVisibility();
+                    updateBodyClass();
+                    renderResources();
+                    initConditions();
+                    
+                } catch (error) {
+                    console.error('Error loading config from URL:', error);
+                }
+            }
+        }
+
+        // Generate shareable URL with current configuration
+        function generateShareUrl() {
+            const config = {
+                resources: resources,
+                gameMode: gameMode,
+                conditions: {
+                    hidden: localStorage.getItem('dh_cond_hidden') === '1',
+                    restrained: localStorage.getItem('dh_cond_restrained') === '1',
+                    vulnerable: localStorage.getItem('dh_cond_vulnerable') === '1'
+                }
+            };
+            
+            const configString = encodeURIComponent(JSON.stringify(config));
+            const shareUrl = `${window.location.origin}${window.location.pathname}?config=${configString}`;
+            
+            return shareUrl;
+        }
+
+        // Copy share URL to clipboard
+        function shareConfig() {
+            const shareUrl = generateShareUrl();
+            
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(shareUrl).then(() => {
+                    alert('Link wurde in die Zwischenablage kopiert!');
+                }).catch(() => {
+                    fallbackCopyTextToClipboard(shareUrl);
+                });
+            } else {
+                fallbackCopyTextToClipboard(shareUrl);
+            }
+        }
+
+        // Fallback for copying to clipboard
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.top = '0';
+            textArea.style.left = '0';
+            textArea.style.position = 'fixed';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                alert('Link wurde in die Zwischenablage kopiert!');
+            } catch (err) {
+                console.error('Fallback: Oops, unable to copy', err);
+                alert('Link konnte nicht kopiert werden. Bitte kopieren Sie ihn manuell:\n' + text);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        // Export configuration as JSON file
+        function exportConfig() {
+            const config = {
+                resources: resources,
+                gameMode: gameMode,
+                conditions: {
+                    hidden: localStorage.getItem('dh_cond_hidden') === '1',
+                    restrained: localStorage.getItem('dh_cond_restrained') === '1',
+                    vulnerable: localStorage.getItem('dh_cond_vulnerable') === '1'
+                }
+            };
+            
+            const dataStr = JSON.stringify(config, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = 'daggerheart-config.json';
+            link.click();
+        }
+
+        // Import configuration from JSON file
+        function importConfig() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            const config = JSON.parse(e.target.result);
+                            
+                            // Load resources from imported config
+                            if (config.resources && Array.isArray(config.resources)) {
+                                resources = config.resources;
+                                saveResources();
+                            }
+                            
+                            // Load game mode from imported config
+                            if (config.gameMode && (config.gameMode === 'player' || config.gameMode === 'gamemaster')) {
+                                gameMode = config.gameMode;
+                            }
+                            
+                            // Load conditions from imported config
+                            if (config.conditions) {
+                                if (config.conditions.hidden !== undefined) {
+                                    localStorage.setItem('dh_cond_hidden', config.conditions.hidden ? '1' : '0');
+                                }
+                                if (config.conditions.restrained !== undefined) {
+                                    localStorage.setItem('dh_cond_restrained', config.conditions.restrained ? '1' : '0');
+                                }
+                                if (config.conditions.vulnerable !== undefined) {
+                                    localStorage.setItem('dh_cond_vulnerable', config.conditions.vulnerable ? '1' : '0');
+                                }
+                            }
+                            
+                            // Re-render everything with the imported config
+                            updateModeTexts();
+                            updateButtonVisibility();
+                            updateBodyClass();
+                            renderResources();
+                            initConditions();
+                            
+                            alert('Konfiguration erfolgreich importiert!');
+                            
+                        } catch (error) {
+                            console.error('Error importing config:', error);
+                            alert('Fehler beim Importieren der Konfiguration. Bitte überprüfen Sie die Datei.');
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            
+            input.click();
+        }
+
         // Initialize the app when the page loads
         document.addEventListener('DOMContentLoaded', function() {
-            init();
-            loadConfigFromUrl();
+            try {
+                init();
+                loadConfigFromUrl();
+            } catch (error) {
+                console.error('Error during initialization:', error);
+                alert('Fehler beim Laden der Anwendung: ' + error.message);
+            }
         });
     </script>
 </body>
