@@ -690,6 +690,15 @@
                 gap: 10px;
             }
         }
+
+        /* Toolbar and legal/footer additions */
+        .toolbar .btn { margin-right: .5rem; padding: 10px 16px; border: 1px solid rgba(0,0,0,0.15); border-radius: 8px; background: #11141a; color: #fff; cursor: pointer; }
+        .panel-conditions { margin: 1rem 0; padding: .75rem 1rem; border:1px solid #2a2f36; border-radius: 10px; background: rgba(255,255,255,0.06); color: #fff; }
+        .panel-conditions h3 { margin:.2rem 0 .6rem 0; font-size:1.1rem; opacity:.85; }
+        .panel-conditions label { margin-right: 1rem; user-select:none; }
+        footer.legal { margin:2rem 0; font-size:.9rem; opacity:.9; color: #fff; }
+        footer.legal a { color: inherit; text-decoration: underline; }
+        .lang-select { padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.2); }
     </style>
 </head>
 <body class="player-standard">
@@ -718,6 +727,15 @@
                 <button class="reset-btn" id="resetBtn" onclick="resetAll()" style="display: none;">
                     Zurücksetzen
                 </button>
+                <select id="langSelect" class="lang-select" style="display:none" aria-label="Sprache">
+                    <option value="de">Deutsch</option>
+                    <option value="en">English</option>
+                </select>
+            </div>
+            <div class="toolbar" id="toolbar">
+                <button id="btn-rules" class="btn">📖 Regelübersicht</button>
+                <button id="btn-short-rest" class="btn">💤 Short Rest</button>
+                <button id="btn-long-rest" class="btn">🛌 Long Rest</button>
             </div>
             
             <div class="mode-toggles">
@@ -732,8 +750,31 @@
                     <span class="toggle-icon" id="gameModeIcon">⚔️</span>
                 </button>
             </div>
+            <section class="panel panel-conditions" aria-label="Conditions">
+              <h3>Conditions</h3>
+              <label><input type="checkbox" id="cond-hidden"> 👁️ Hidden</label>
+              <label><input type="checkbox" id="cond-restrained"> ⛓️ Restrained</label>
+              <label><input type="checkbox" id="cond-vulnerable"> ⚡ Vulnerable</label>
+            </section>
         </main>
     </div>
+
+    <footer class="legal">
+      <p><strong>Daggerheart Tracker</strong> – Fan-made tool. Not affiliated with Darrington Press or Critical Role.</p>
+      <p>
+        Licensed use under the
+        <a href="https://darringtonpress.com/license/" target="_blank" rel="noopener">Darrington Press Community Gaming License (DPCGL)</a>.
+        Daggerheart SRD: <a href="https://www.daggerheart.com/srd/" target="_blank" rel="noopener">daggerheart.com/srd</a>.
+      </p>
+      <p class="privacy">
+        Datenschutz: Dieses Tool speichert Daten ausschließlich lokal in deinem Browser (Local Storage).
+        Es werden keine personenbezogenen Daten übertragen. Export/Import erfolgt als JSON auf deinem Gerät.
+      </p>
+      <p class="meta">
+        Impressum: <a href="https://bdornauf.de" target="_blank" rel="noopener">bdornauf.de</a>
+        &nbsp;•&nbsp; v0.4.0 &nbsp;•&nbsp; © 2025 B. Dornauf
+      </p>
+    </footer>
 
     <!-- Add Resource Modal -->
     <div class="modal-overlay" id="modalOverlay">
@@ -852,6 +893,90 @@
             '#d35400', '#8e44ad', '#16a085', '#c0392b'
         ];
 
+        // i18n translations
+        const i18n = {
+          de: {
+            title: 'Daggerheart Tracker',
+            addResource: '+ Neue Ressource',
+            reset: 'Zurücksetzen',
+            confirmReset: 'Möchten Sie alle Ressourcen auf ihre Standardwerte zurücksetzen?',
+            configMode: 'Config Modus',
+            toggleToGM: 'Wechseln zu Spielleiter Modus',
+            toggleToPlayer: 'Wechseln zu Spieler Modus',
+            rules: '📖 Regelübersicht',
+            shortRest: '💤 Short Rest',
+            longRest: '🛌 Long Rest',
+            conditions: 'Conditions',
+            hidden: '👁️ Hidden',
+            restrained: '⛓️ Restrained',
+            vulnerable: '⚡ Vulnerable',
+            formTitle: 'Neue Ressource hinzufügen',
+            formName: 'Name:',
+            formNamePlaceholder: 'z.B. Mana, Rage, Inspiration...',
+            formCurrent: 'Aktueller Wert:',
+            formMax: 'Maximaler Wert:',
+            formColor: 'Farbe:',
+            formCancel: 'Abbrechen',
+            formSubmit: 'Hinzufügen'
+          },
+          en: {
+            title: 'Daggerheart Tracker',
+            addResource: '+ Add Resource',
+            reset: 'Reset',
+            confirmReset: 'Do you want to reset all resources to their defaults?',
+            configMode: 'Config Mode',
+            toggleToGM: 'Switch to Gamemaster mode',
+            toggleToPlayer: 'Switch to Player mode',
+            rules: '📖 Rules Overview',
+            shortRest: '💤 Short Rest',
+            longRest: '🛌 Long Rest',
+            conditions: 'Conditions',
+            hidden: '👁️ Hidden',
+            restrained: '⛓️ Restrained',
+            vulnerable: '⚡ Vulnerable',
+            formTitle: 'Add new resource',
+            formName: 'Name:',
+            formNamePlaceholder: 'e.g. Mana, Rage, Inspiration...',
+            formCurrent: 'Current:',
+            formMax: 'Max:',
+            formColor: 'Color:',
+            formCancel: 'Cancel',
+            formSubmit: 'Add'
+          }
+        };
+
+        function getInitialLang() {
+          const stored = localStorage.getItem('dh_lang');
+          if (stored === 'de' || stored === 'en') return stored;
+          return (navigator.language || 'en').toLowerCase().startsWith('de') ? 'de' : 'en';
+        }
+
+        let currentLang = getInitialLang();
+
+        function t(key) {
+          return (i18n[currentLang] && i18n[currentLang][key]) || key;
+        }
+
+        function applyTranslations() {
+          document.querySelector('.app-header h1').textContent = t('title');
+          document.getElementById('addResourceBtn').textContent = t('addResource');
+          document.getElementById('resetBtn').textContent = t('reset');
+          document.getElementById('btn-rules').textContent = t('rules');
+          document.getElementById('btn-short-rest').textContent = t('shortRest');
+          document.getElementById('btn-long-rest').textContent = t('longRest');
+          const panelTitle = document.querySelector('.panel-conditions h3');
+          if (panelTitle) panelTitle.textContent = t('conditions');
+          document.querySelector('label[for="resource-name"]')?.replaceChildren(document.createTextNode(t('formName')));
+          const nameInput = document.getElementById('resource-name');
+          if (nameInput) nameInput.setAttribute('placeholder', t('formNamePlaceholder'));
+          document.querySelector('label[for="resource-current"]').textContent = t('formCurrent');
+          document.querySelector('label[for="resource-max"]').textContent = t('formMax');
+          document.querySelector('.modal-header h2').textContent = t('formTitle');
+          document.querySelector('.form-group label')?.textContent = t('formName');
+          document.querySelector('.form-actions .btn-secondary').textContent = t('formCancel');
+          document.querySelector('.form-actions .btn-primary').textContent = t('formSubmit');
+        }
+
         // Initialize the app
         function init() {
             loadResources();
@@ -860,6 +985,22 @@
             updateButtonVisibility();
             updateBodyClass();
             renderResources();
+            // Conditions init
+            initConditions();
+            // Lang selector
+            const langSelect = document.getElementById('langSelect');
+            langSelect.value = currentLang;
+            langSelect.addEventListener('change', (e) => {
+              currentLang = e.target.value;
+              localStorage.setItem('dh_lang', currentLang);
+              applyTranslations();
+            });
+            // Toolbar actions
+            document.getElementById('btn-rules').addEventListener('click', () => { window.location.href = 'public/rules.html'; });
+            document.getElementById('btn-short-rest').addEventListener('click', applyShortRest);
+            document.getElementById('btn-long-rest').addEventListener('click', applyLongRest);
+            // Initial translations
+            applyTranslations();
         }
 
         // Load resources from localStorage
@@ -944,10 +1085,12 @@
             const addBtn = document.getElementById('addResourceBtn');
             const resetBtn = document.getElementById('resetBtn');
             const gameModeToggle = document.getElementById('gameModeToggle');
+            const langSelect = document.getElementById('langSelect');
             
             addBtn.style.display = isConfigMode ? 'block' : 'none';
             resetBtn.style.display = isConfigMode ? 'block' : 'none';
             gameModeToggle.style.display = isConfigMode ? 'block' : 'none';
+            langSelect.style.display = isConfigMode ? 'inline-block' : 'none';
         }
 
         // Update body class for background colors
@@ -1154,11 +1297,50 @@
 
         // Reset all resources
         function resetAll() {
-            if (confirm('Möchten Sie alle Ressourcen auf ihre Standardwerte zurücksetzen?')) {
+            if (confirm(t('confirmReset'))) {
                 resources = gameMode === 'player' ? [...defaultPlayerResources] : [...defaultGamemasterResources];
                 saveResources();
                 renderResources();
             }
+        }
+
+        // Conditions persistence
+        const COND_KEYS = { hidden: 'dh_cond_hidden', restrained: 'dh_cond_restrained', vulnerable: 'dh_cond_vulnerable' };
+        function initConditions() {
+          const ids = ['hidden','restrained','vulnerable'];
+          ids.forEach(k => {
+            const el = document.getElementById(`cond-${k}`);
+            if (!el) return;
+            el.checked = localStorage.getItem(COND_KEYS[k]) === '1';
+            el.addEventListener('change', () => {
+              localStorage.setItem(COND_KEYS[k], el.checked ? '1' : '0');
+            });
+          });
+        }
+
+        // Rest logic
+        const SHORT_REST_CLEAR = 2;
+        function applyShortRest() {
+          resources = resources.map(r => {
+            if ((r.name || '').trim().toLowerCase() === 'stress') {
+              const next = Math.max(0, (r.current || 0) - SHORT_REST_CLEAR);
+              return { ...r, current: next };
+            }
+            return r;
+          });
+          saveResources();
+          renderResources();
+        }
+
+        function applyLongRest() {
+          resources = resources.map(r => {
+            if ((r.name || '').trim().toLowerCase() === 'stress') {
+              return { ...r, current: 0 };
+            }
+            return r;
+          });
+          saveResources();
+          renderResources();
         }
 
         // Initialize the app when the page loads
